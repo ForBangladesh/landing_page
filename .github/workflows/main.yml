@@ -31,6 +31,6 @@ jobs:
             cd /www/wwwroot/toholapp.com
             git stash
             git pull origin main
-            chown -R www:www *
-            find -type d -print0 | xargs -0 chmod 0755
-            find -type f -print0 | xargs -0 chmod 0644
+            chown -R www:www * !(.user.ini)
+            find -type d -print0 | xargs -0 chmod -f 0755 || :
+            find -type f -print0 | xargs -0 chmod -f 0644 || :
