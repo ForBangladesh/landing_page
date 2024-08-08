@@ -1,0 +1,36 @@
+name: 🚀 Tohol App Landing [Prod]
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  app_deployment:
+    name: 🎉 Deployment
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚚 Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: 'app_deployment'
+
+      - name: 🚚 Adding Known Hosts
+        run: ssh-keyscan -p ${{ secrets.SSH_PORT }} -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: 🚀 Run Deployment Script
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          command_timeout: 30m
+          script: |
+            cd /www/wwwroot/toholapp.com
+            git stash
+            git pull origin main
+            chown -R www:www *
+            find -type d -print0 | xargs -0 chmod 0755
+            find -type f -print0 | xargs -0 chmod 0644
