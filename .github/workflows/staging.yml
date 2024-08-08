@@ -1,0 +1,74 @@
+name: 🚀 Tohol App Landing [Staging]
+
+on:
+  push:
+    branches:
+      - staging
+
+jobs:
+  app_deployment:
+    name: 🎉 Deployment
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚚 Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.STAGING_SSH_PRIVATE_KEY }}
+          known_hosts: 'app_deployment'
+
+      - name: 🚚 Adding Known Hosts
+        run: ssh-keyscan -p ${{ secrets.STAGING_SSH_PORT }} -H ${{ secrets.STAGING_SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: 🚀 Run Deployment Script
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.STAGING_SSH_HOST }}
+          username: ${{ secrets.STAGING_SSH_USER }}
+          key: ${{ secrets.STAGING_SSH_PRIVATE_KEY }}
+          port: ${{ secrets.STAGING_SSH_PORT }}
+          command_timeout: 30m
+          script: |
+            cd /www/wwwroot/toholapp.com
+            git stash
+            git pull origin main
+            chown -R www:www *
+            find -type d -print0 | xargs -0 chmod -f 0755 || :
+            find -type f -print0 | xargs -0 chmod -f 0644 || :
+
+  on_success:
+    name: ⚡️ Send Telegram Message on Success
+    needs: app_deployment
+    if: ${{ success() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Telegram Message on Success
+        run: |
+          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage \
+            -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+            -d message_thread_id=${{ secrets.TELEGRAM_THREAD_ID }} \
+            -d text="
+            ✅ New version released for toholapp.com 🎉
+            ----------------------
+            👷 New commit by ${{ github.actor }}!
+            🚩 Commit: ${{ github.event.head_commit.message }}
+            🌐 Repository: ${{ github.repository }}
+            🔖 Branch: ${{ github.ref_name }}"
+  
+  on_failure:
+    name: ⚡️ Send Telegram Message on Failure
+    needs: app_deployment
+    if: ${{ failure() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Telegram Message on Failure
+        run: |
+          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage \
+            -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+            -d message_thread_id=${{ secrets.TELEGRAM_THREAD_ID }} \
+            -d text="
+            ❌ New version released failed for toholapp.com
+            ----------------------
+            👷 New commit by ${{ github.actor }}!
+            🚩 Commit: ${{ github.event.head_commit.message }}
+            🌐 Repository: ${{ github.repository }}
+            🔖 Branch: ${{ github.ref_name }}"
