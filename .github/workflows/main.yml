@@ -34,17 +34,41 @@ jobs:
             chown -R www:www *
             find -type d -print0 | xargs -0 chmod -f 0755 || :
             find -type f -print0 | xargs -0 chmod -f 0644 || :
-      
+
+  on_success:
+    name: ⚡️ Send Telegram Message on Success
+    needs: app_deployment
+    if: ${{ success() }}
+    runs-on: ubuntu-latest
+    steps:
       - name: Send Telegram Message on Success
         run: |
           curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage \
             -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
             -d message_thread_id=${{ secrets.TELEGRAM_THREAD_ID }} \
             -d text="
-            ✅ New version released for *toholapp.com 🎉
+            ✅ New version released for toholapp.com 🎉
             ----------------------
             👷 New commit by ${{ github.actor }}!
             🚩 Commit: ${{ github.event.head_commit.message }}
-            🌐 Repository: ${{ github.repository }}"
-            🔖 Branch: ${{ github.ref_name }}" \
-            -d parse_mode="Markdown"
+            🌐 Repository: ${{ github.repository }}
+            🔖 Branch: ${{ github.ref_name }}"
+  
+  on_failure:
+    name: ⚡️ Send Telegram Message on Failure
+    needs: app_deployment
+    if: ${{ failure() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Telegram Message on Failure
+        run: |
+          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage \
+            -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+            -d message_thread_id=${{ secrets.TELEGRAM_THREAD_ID }} \
+            -d text="
+            ❌ New version released failed for toholapp.com
+            ----------------------
+            👷 New commit by ${{ github.actor }}!
+            🚩 Commit: ${{ github.event.head_commit.message }}
+            🌐 Repository: ${{ github.repository }}
+            🔖 Branch: ${{ github.ref_name }}"
