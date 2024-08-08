@@ -10,32 +10,47 @@ jobs:
     name: 🎉 Deployment
     runs-on: ubuntu-latest
     steps:
+      - name: 🚚 Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: 'app_deployment'
+
+  on_success:
+    name: ⚡️ Send Telegram Message on Success
+    if: github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
       - name: Send Telegram Message on Success
-        if: success()
         run: |
           curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage \
             -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
             -d message_thread_id=${{ secrets.TELEGRAM_THREAD_ID }} \
             -d text="
-            ✅ New version released for *toholapp.com* 🎉
+            ✅ New version released for toholapp.com 🎉
             ----------------------
-            👷 New commit by *${{ github.actor }}*!
-            🚩 *Commit:* ${{ github.event.head_commit.message }}
-            🌐 *Repository:* ${{ github.repository }}"
-            🔖 *Branch:* ${{ github.ref_name }}" \
+            👷 New commit by ${{ github.actor }}!
+            🚩 Commit: ${{ github.event.head_commit.message }}
+            🌐 Repository: ${{ github.repository }}"
+            🔖 Branch: ${{ github.ref_name }}" \
+            -d parse_mode="Markdown"
+  
+  on_failure:
+    name: ⚡️ Send Telegram Message on Failure
+    if: github.event.workflow_run.conclusion != 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Telegram Message on Failure
+        run: |
+          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage \
+            -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+            -d message_thread_id=${{ secrets.TELEGRAM_THREAD_ID }} \
+            -d text="
+            ❌ New version released failed for toholapp.com 🎉
+            ----------------------
+            👷 New commit by ${{ github.actor }}!
+            🚩 Commit: ${{ github.event.head_commit.message }}
+            🌐 Repository: ${{ github.repository }}"
+            🔖 Branch: ${{ github.ref_name }}" \
             -d parse_mode="Markdown"
       
-      - name: Send Telegram Message on Failure
-        if: failure()
-        run: |
-          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage \
-            -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
-            -d message_thread_id=${{ secrets.TELEGRAM_THREAD_ID }} \
-            -d text="
-            ❌ New version released failed for *toholapp.com* 🎉
-            ----------------------
-            👷 New commit by *${{ github.actor }}*!
-            🚩 *Commit:* ${{ github.event.head_commit.message }}
-            🌐 *Repository:* ${{ github.repository }}"
-            🔖 *Branch:* ${{ github.ref_name }}" \
-            -d parse_mode="Markdown"
