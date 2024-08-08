@@ -10,16 +10,16 @@ jobs:
     name: 🎉 Deployment
     runs-on: ubuntu-latest
     steps:
-      - name: 💬 Send Telegram Message
+      - name: Send Telegram Message on Success
         if: success()
-        uses: cbrgm/telegram-github-action@v1
-        with:
-          token: ${{ secrets.TELEGRAM_TOKEN }}
-          to: ${{ secrets.TELEGRAM_CHAT_ID }}
-          message: |
-            ✅ New version released for toholapp.com 🎉
+        run: |
+          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage \
+            -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+            -d message_thread_id=${{ secrets.TELEGRAM_THREAD_ID }} \
+            -d text="✅ New version released for toholapp.com 🎉
             ----------------------
             👷 New commit by ${{ github.actor }}!
             🚩 Commit: ${{ github.event.head_commit.message }}
             🌐 Repository: ${{ github.repository }}
-            🏗️ View changes: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
+            🏗️ View changes: https://github.com/${{ github.repository }}/commit/${{ github.sha }}" \
+            -d parse_mode="Markdown"
