@@ -46,7 +46,7 @@ jobs:
             ----------------------
             👷 New commit by *${{ github.actor }}*!
             🚩 *Commit:* ${{ github.event.head_commit.message }}
-            🌐 *Repository:* ${{ github.repository }}" \
+            🌐 *Repository:* ${{ github.repository }}"
             🔖 *Branch:* ${{ github.ref_name }}" \
             -d parse_mode="Markdown"
       
@@ -61,6 +61,6 @@ jobs:
             ----------------------
             👷 New commit by *${{ github.actor }}*!
             🚩 *Commit:* ${{ github.event.head_commit.message }}
-            🌐 *Repository:* ${{ github.repository }}" \
+            🌐 *Repository:* ${{ github.repository }}"
             🔖 *Branch:* ${{ github.ref_name }}" \
             -d parse_mode="Markdown"
