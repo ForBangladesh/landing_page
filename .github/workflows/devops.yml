@@ -1,0 +1,25 @@
+name: 🚀 Tohol App Landing [DevOps]
+
+on:
+  push:
+    branches:
+      - devops
+
+jobs:
+  app_deployment:
+    name: 🎉 Deployment
+    runs-on: ubuntu-latest
+    steps:
+      - name: 💬 Send Telegram Message
+        if: success()
+        uses: cbrgm/telegram-github-action@v1
+        with:
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          message: |
+            ✅ New version released for toholapp.com 🎉
+            ----------------------
+            👷 New commit by ${{ github.actor }}!
+            🚩 Commit: ${{ github.event.head_commit.message }}
+            🌐 Repository: ${{ github.repository }}
+            🏗️ View changes: https://github.com/${{ github.repository }}/commit/${{ github.sha }}

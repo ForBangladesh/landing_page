@@ -34,3 +34,17 @@ jobs:
             chown -R www:www *
             find -type d -print0 | xargs -0 chmod -f 0755 || :
             find -type f -print0 | xargs -0 chmod -f 0644 || :
+      
+      - name: 💬 Send Telegram Message
+        if: success()
+        uses: cbrgm/telegram-github-action@v1
+        with:
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          to: ${{ secrets.TELEGRAM_CHAT_ID }}
+          message: |
+            ✅ New version released for toholapp.com 🎉
+            ----------------------
+            👷 New commit by ${{ github.actor }}!
+            🚩 Commit: ${{ github.event.head_commit.message }}
+            🌐 Repository: ${{ github.repository }}
+            🏗️ View changes: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
