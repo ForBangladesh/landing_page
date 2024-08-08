@@ -33,8 +33,7 @@ jobs:
             👷 New commit by ${{ github.actor }}!
             🚩 Commit: ${{ github.event.head_commit.message }}
             🌐 Repository: ${{ github.repository }}
-            🔖 Branch: ${{ github.ref_name }}" \
-            -d parse_mode="Markdown"
+            🔖 Branch: ${{ github.ref_name }}"
   
   on_failure:
     name: ⚡️ Send Telegram Message on Failure
@@ -47,5 +46,4 @@ jobs:
           curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage \
             -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
             -d message_thread_id=${{ secrets.TELEGRAM_THREAD_ID }} \
-            -d text="❌ New version released failed for toholapp.com\n----------------------\n👷 New commit by ${{ github.actor }}!\n🚩 Commit: ${{ github.event.head_commit.message }}\n🌐 Repository: ${{ github.repository }}\n🔖 Branch: ${{ github.ref_name }}" \
-            -d parse_mode="Markdown"
+            -d text="❌ New version released failed for toholapp.com\n----------------------\n👷 New commit by ${{ github.actor }}!\n🚩 Commit: ${{ github.event.head_commit.message }}\n🌐 Repository: ${{ github.repository }}\n🔖 Branch: ${{ github.ref_name }}"
