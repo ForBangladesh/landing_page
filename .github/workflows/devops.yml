@@ -3,7 +3,7 @@ name: 🚀 Tohol App Landing [DevOps]
 on:
   push:
     branches:
-      - devops
+      - devops-stop
 
 jobs:
   app_deployment:
