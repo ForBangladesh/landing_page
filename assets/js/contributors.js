@@ -4,15 +4,6 @@ function createSocialLink(href, iconClass) {
     return `<a href="${href}" target="_blank"><i class="${iconClass}"></i></a>`;
 }
 
-// Function to check if the GitHub avatar exists
-function checkGithubAvatar(githubUsername, fallbackUrl, callback) {
-    const githubUrl = `https://github.com/${githubUsername}.png`;
-    const img = new Image();
-    img.onload = () => callback(githubUrl);
-    img.onerror = () => callback(fallbackUrl);
-    img.src = githubUrl;
-}
-
 // Function to generate the markup for a team member
 function generateMemberMarkup({ name, github, linkedin, facebook, x, website, title, picture_url }, imageUrl) {
     return `
@@ -37,23 +28,20 @@ function generateMemberMarkup({ name, github, linkedin, facebook, x, website, ti
 
 // Function to load the JSON data and render the markup
 function loadTeamMembers() {
+    const teamContainer = document.getElementById('team-container');
+
     fetch(`/assets/data/contributors.json?cache-bust=${+new Date().getTime()}`)
         .then(response => response.json())
         .then(data => {
-            const teamContainer = document.getElementById('team-container');
-
-            data.forEach(member => {
-                const fallbackUrl = member.picture_url || "/assets/img/team/team-member.jpg";
+            data
+            .map(value => ({ value, sort: Math.random() }))
+            .sort((a, b) => a.sort - b.sort)
+            .map(({ value }) => value)
+            .forEach(member => {
+                const fallbackUrl = member.picture_url || (member.github ? `https://github.com/${member.github}.png` : '') || "/assets/img/team/team-member.jpg";
                 
-                if (member.github) {
-                    checkGithubAvatar(member.github, fallbackUrl, (imageUrl) => {
-                        const memberMarkup = generateMemberMarkup(member, imageUrl);
-                        teamContainer.innerHTML += memberMarkup;
-                    });
-                } else {
-                    const memberMarkup = generateMemberMarkup(member, fallbackUrl);
+                const memberMarkup = generateMemberMarkup(member, fallbackUrl);
                     teamContainer.innerHTML += memberMarkup;
-                }
             });
         })
         .catch(error => console.error('Error loading team members:', error));

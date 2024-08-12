@@ -9,9 +9,10 @@
         "title": "Software Engineer"
     },
     {
-        "name": "Kaisar H.",
-        "github": "kaisarh",
-        "title": "Software Engineer"
+        "name": "M. Kaisar Haque",
+        "linkedin": "kaisarh",
+        "title": "Tinkerer, gardener and coffee addict",
+        "picture_url": "/assets/img/team/kaiserh.jpg"
     },
     {
         "name": "Mahir Labib Chowdhury",
@@ -23,7 +24,9 @@
     {
         "name": "Mafinar Khan",
         "github": "code-shoily",
-        "title": "Software Engineer"
+        "linkedin": "mafinar-khan",
+        "facebook": "mafinar",
+        "title": "Staff Engineer, Coffee Meets Bagel"
     },
     {
         "name": "Kazi Khayruzzaman Meraj",
@@ -39,12 +42,12 @@
         "github": "hashemirafsan",
         "website": "https://rafsan.dorik.io/",
         "x": "rafsanhashemi",
-        "title": "Software Engineer"
+        "title": "Senior Software Engineer, Travela"
     },
     {
-        "name": "Ruhshan",
+        "name": "Ruhshan Ahmed Abir",
         "github": "ruhshan",
-        "title": "Software Engineer"
+        "title": "Full time dad, Part time coder"
     },
     {
         "name": "Seemran Kabir",
@@ -55,7 +58,7 @@
         "github": "oritromax",
         "website": "http://ioritro.com",
         "x": "oritromax",
-        "title": "Software Engineer"
+        "title": "Full time gamer, Part Time keyboard warrior"
     },
     {
         "name": "Hanzalah Bin Sultan",
@@ -75,6 +78,13 @@
         "title": "Branding, Marketing and Engagement"
     },
     {
+        "name": "MetroVPS",
+        "website": "https://metrovps.com",
+        "facebook": "metrovps",
+        "title": "Infrastructure and Hosting",
+        "picture_url": "/assets/img/team/metrovps.jpg"
+    },
+    {
         "name": "M A Hossain Tonu",
         "github": "mahtonu",
         "website": "https://mahtonu.wordpress.com/",
@@ -84,5 +94,11 @@
         "name": "Ani A.",
         "github": "aniruddha-adhikary",
         "title": "Coordinator"
+    },
+    {
+        "name": "Sashoto Seeam",
+        "linkedin": "sashoto",
+        "picture_url": "/assets/img/team/seeam.jpg",
+        "title": "Principal Product Designer, LifeData"
     }
 ]
